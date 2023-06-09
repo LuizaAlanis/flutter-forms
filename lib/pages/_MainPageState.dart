@@ -15,6 +15,9 @@ class _MainPageState extends State<MainPageState> {
   late TextEditingController realStateName;
   late TextEditingController realStateDescription;
   late TextEditingController realStateDueDate;
+  late TextEditingController realStateCEP;
+  late TextEditingController realStateAddress;
+  late TextEditingController realStateNumber;
 
   @override
   void initState() {
@@ -23,6 +26,9 @@ class _MainPageState extends State<MainPageState> {
     realStateName = TextEditingController();
     realStateDescription = TextEditingController();
     realStateDueDate = TextEditingController();
+    realStateCEP = TextEditingController();
+    realStateAddress = TextEditingController();
+    realStateNumber = TextEditingController();
   }
 
   @override
@@ -31,6 +37,9 @@ class _MainPageState extends State<MainPageState> {
     realStateName.dispose();
     realStateDescription.dispose();
     realStateDueDate.dispose();
+    realStateCEP.dispose();
+    realStateAddress.dispose();
+    realStateNumber.dispose();
     super.dispose();
   }
 
@@ -91,8 +100,6 @@ class _MainPageState extends State<MainPageState> {
                     setState(() {
                       realStateStartDate.text = formattedDate.toString();
                     });
-                  } else {
-                    print("Date not selected");
                   }
                 },
               ),
@@ -114,8 +121,6 @@ class _MainPageState extends State<MainPageState> {
                     setState(() {
                       realStateDueDate.text = formattedDate.toString();
                     });
-                  } else {
-                    print("Date not selected");
                   }
                 },
               ),
@@ -123,12 +128,42 @@ class _MainPageState extends State<MainPageState> {
           ),
         ),
         Step(
-            isActive: currentStep >= 1,
-            title: const Text('2'),
-            content: Container()),
+          isActive: currentStep >= 1,
+          title: const Text('2'),
+          content: Column(
+            children: <Widget>[
+              TextFormField(
+                  controller: realStateCEP,
+                  decoration: const InputDecoration(labelText: 'CEP')),
+              TextFormField(
+                controller: realStateAddress,
+                decoration: const InputDecoration(labelText: 'Endereço'),
+                readOnly: true,
+              ),
+              TextFormField(
+                  controller: realStateNumber,
+                  decoration: const InputDecoration(labelText: 'Número')),
+            ],
+          ),
+        ),
         Step(
-            isActive: currentStep >= 2,
-            title: const Text('3'),
-            content: Container())
+          isActive: currentStep >= 2,
+          title: const Text('3'),
+          content: Column(
+            children: <Widget>[
+              TextFormField(
+                  controller: realStateCEP,
+                  decoration: const InputDecoration(labelText: 'CEP')),
+              TextFormField(
+                controller: realStateAddress,
+                decoration: const InputDecoration(labelText: 'Endereço'),
+                readOnly: true,
+              ),
+              TextFormField(
+                  controller: realStateNumber,
+                  decoration: const InputDecoration(labelText: 'Número')),
+            ],
+          ),
+        ),
       ];
 }
