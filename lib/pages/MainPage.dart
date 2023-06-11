@@ -9,7 +9,9 @@ class MainPage extends StatefulWidget {
 }
 
 class MainPageState extends State<MainPage> {
+  final formKey = GlobalKey<FormState>();
   int currentStep = 0;
+  int? firstInvalidStep;
 
   late TextEditingController realStateStartDate;
   late TextEditingController realStateName;
@@ -45,17 +47,23 @@ class MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: const Text('Stepper'),
-          centerTitle: true,
-        ),
-        body: Stepper(
+      appBar: AppBar(
+        title: const Text('Stepper'),
+        centerTitle: true,
+      ),
+      body: Form(
+        key: formKey,
+        child: Stepper(
           type: StepperType.horizontal,
           steps: getSteps(),
           currentStep: currentStep,
           onStepContinue: () {
             final isLastStep = currentStep == getSteps().length - 1;
             if (isLastStep) {
+              final isValid = formKey.currentState?.validate();
+              if (isValid == false){
+                setState(() => currentStep = 0);
+              }
               // send data to server
             } else {
               setState(() => currentStep += 1);
@@ -67,7 +75,7 @@ class MainPageState extends State<MainPage> {
                   setState(() => currentStep -= 1);
                 },
         ),
-      );
+      ));
 
   List<Step> getSteps() => [
         Step(
@@ -76,8 +84,16 @@ class MainPageState extends State<MainPage> {
           content: Column(
             children: <Widget>[
               TextFormField(
-                  controller: realStateName,
-                  decoration: const InputDecoration(labelText: 'Nome')),
+                controller: realStateName,
+                decoration: const InputDecoration(labelText: 'Nome'),
+                validator: (value) {
+                  if (value!.length < 4) {
+                    return 'Enter at least 4 characters';
+                  } else {
+                    return null;
+                  }
+                },
+              ),
               TextFormField(
                   controller: realStateDescription,
                   decoration: const InputDecoration(labelText: 'Descrição')),
