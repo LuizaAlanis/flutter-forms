@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class MainPageState extends StatefulWidget {
-  const MainPageState({super.key});
+class MainPage extends StatefulWidget {
+  const MainPage({super.key});
 
   @override
-  _MainPageState createState() => _MainPageState();
+  MainPageState createState() => MainPageState();
 }
 
-class _MainPageState extends State<MainPageState> {
+class MainPageState extends State<MainPage> {
   int currentStep = 0;
 
   late TextEditingController realStateStartDate;
@@ -56,7 +56,6 @@ class _MainPageState extends State<MainPageState> {
           onStepContinue: () {
             final isLastStep = currentStep == getSteps().length - 1;
             if (isLastStep) {
-              print('Completed');
               // send data to server
             } else {
               setState(() => currentStep += 1);
