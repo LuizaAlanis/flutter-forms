@@ -11,7 +11,7 @@ class MainPage extends StatefulWidget {
 class MainPageState extends State<MainPage> {
   final formKey = GlobalKey<FormState>();
   int currentStep = 0;
-  int? firstInvalidStep;
+  bool isInvalidData = false;
 
   late TextEditingController realStateStartDate;
   late TextEditingController realStateName;
@@ -61,10 +61,13 @@ class MainPageState extends State<MainPage> {
             final isLastStep = currentStep == getSteps().length - 1;
             if (isLastStep) {
               final isValid = formKey.currentState?.validate();
-              if (isValid == false){
+              if (isValid == false) {
                 setState(() => currentStep = 0);
+                setState(() => isInvalidData = true);
+              } else {
+                setState(() => isInvalidData = false);
+                // send data to server
               }
-              // send data to server
             } else {
               setState(() => currentStep += 1);
             }
@@ -83,12 +86,19 @@ class MainPageState extends State<MainPage> {
           title: const Text('1'),
           content: Column(
             children: <Widget>[
+              if (isInvalidData)
+                const Text(
+                  'Notamos uma inconsistência nos dados, por favor, revise o formulário.',
+                  style: TextStyle(
+                    color: Color(0xFFD32F2F),
+                  ),
+                ),
               TextFormField(
                 controller: realStateName,
                 decoration: const InputDecoration(labelText: 'Nome'),
                 validator: (value) {
                   if (value!.length < 4) {
-                    return 'Enter at least 4 characters';
+                    return 'Digite pelo menos 4 caracteres';
                   } else {
                     return null;
                   }
