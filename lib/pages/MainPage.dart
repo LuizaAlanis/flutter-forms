@@ -141,9 +141,7 @@ class MainPageState extends State<MainPage> {
               if (isInvalidData)
                 const Text(
                   'Notamos uma inconsistência nos dados, por favor, revise o formulário.',
-                  style: TextStyle(
-                    color: errorColor
-                  ),
+                  style: TextStyle(color: errorColor),
                 ),
               TextFormField(
                 controller: realStateName,
@@ -157,14 +155,29 @@ class MainPageState extends State<MainPage> {
                 },
               ),
               TextFormField(
-                  controller: realStateDescription,
-                  decoration: const InputDecoration(labelText: 'Descrição *')),
+                controller: realStateDescription,
+                decoration: const InputDecoration(labelText: 'Descrição *'),
+                validator: (value) {
+                  if (value!.length < 10) {
+                    return 'Digite pelo menos 10 caracteres';
+                  } else {
+                    return null;
+                  }
+                },
+              ),
               TextFormField(
                 controller: realStateStartDate,
                 decoration: const InputDecoration(
                     labelText: 'Data de início *',
                     suffixIcon: Icon(Icons.calendar_today)),
                 readOnly: true,
+                validator: (value) {
+                  if (value!.length < 2) {
+                    return 'Selecione uma data';
+                  } else {
+                    return null;
+                  }
+                },
                 onTap: () async {
                   DateTime? pickedDate = await showDatePicker(
                       context: context,
@@ -186,6 +199,13 @@ class MainPageState extends State<MainPage> {
                     labelText: 'Estimativa de entrega *',
                     suffixIcon: Icon(Icons.calendar_today)),
                 readOnly: true,
+                validator: (value) {
+                  if (value!.length < 2) {
+                    return 'Selecione uma data';
+                  } else {
+                    return null;
+                  }
+                },
                 onTap: () async {
                   DateTime? pickedDate = await showDatePicker(
                       context: context,
@@ -211,16 +231,32 @@ class MainPageState extends State<MainPage> {
           content: Column(
             children: <Widget>[
               TextFormField(
-                  controller: realStateCEP,
-                  decoration: const InputDecoration(labelText: 'CEP *')),
+                controller: realStateCEP,
+                decoration: const InputDecoration(labelText: 'CEP *'),
+                validator: (value) {
+                  if (value!.length < 5) {
+                    return 'Por favor, informe o CEP';
+                  } else {
+                    return null;
+                  }
+                },
+              ),
               TextFormField(
                 controller: realStateAddress,
                 decoration: const InputDecoration(labelText: 'Endereço *'),
                 readOnly: true,
               ),
               TextFormField(
-                  controller: realStateNumber,
-                  decoration: const InputDecoration(labelText: 'Número *')),
+                controller: realStateNumber,
+                decoration: const InputDecoration(labelText: 'Número *'),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Por favor, informe o número';
+                  } else {
+                    return null;
+                  }
+                },
+              ),
             ],
           ),
         ),
