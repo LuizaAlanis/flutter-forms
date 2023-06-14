@@ -110,6 +110,7 @@ class MainPageState extends State<MainPage> {
               onStepTapped: (step) => setState(() => currentStep = step),
               controlsBuilder:
                   (BuildContext context, ControlsDetails controls) {
+                final isLastStep = currentStep == getSteps().length - 1;
                 return Container(
                   margin: const EdgeInsets.only(top: 50),
                   child: Row(
@@ -117,16 +118,17 @@ class MainPageState extends State<MainPage> {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: controls.onStepContinue,
-                          child: const Text('Próximo'),
+                          child: Text(isLastStep ? 'Cadastrar' : 'Próximo'),
                         ),
                       ),
                       const SizedBox(width: 12),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: controls.onStepCancel,
-                          child: const Text('Voltar'),
+                      if (currentStep != 0)
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: controls.onStepCancel,
+                            child: const Text('Voltar'),
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 );
