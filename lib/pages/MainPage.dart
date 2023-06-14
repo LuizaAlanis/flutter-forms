@@ -21,6 +21,18 @@ class MainPageState extends State<MainPage> {
   late TextEditingController realStateAddress;
   late TextEditingController realStateNumber;
 
+  late TextEditingController realStateFloors;
+  late TextEditingController realStatePoolsQuantity;
+  late TextEditingController realStateTennisCourtsQuantity;
+  late TextEditingController realStateFootballCourtsQuantity;
+  late TextEditingController realStateSaunasQuantity;
+  late TextEditingController realStatePartyRoomsQuantity;
+  late TextEditingController realStateOutdoorGrillsQuantity;
+  late TextEditingController realStatePlaygroundsQuantity;
+  late TextEditingController realStateUnitsCount;
+  late TextEditingController realStateVisitorParkingSpotsQuantity;
+
+
   @override
   void initState() {
     super.initState();
@@ -31,6 +43,17 @@ class MainPageState extends State<MainPage> {
     realStateCEP = TextEditingController();
     realStateAddress = TextEditingController();
     realStateNumber = TextEditingController();
+
+    realStateFloors = TextEditingController();
+    realStatePoolsQuantity = TextEditingController();
+    realStateTennisCourtsQuantity = TextEditingController();
+    realStateFootballCourtsQuantity = TextEditingController();
+    realStateSaunasQuantity = TextEditingController();
+    realStatePartyRoomsQuantity = TextEditingController();
+    realStateOutdoorGrillsQuantity = TextEditingController();
+    realStatePlaygroundsQuantity = TextEditingController();
+    realStateUnitsCount = TextEditingController();
+    realStateVisitorParkingSpotsQuantity = TextEditingController();
   }
 
   @override
@@ -42,13 +65,25 @@ class MainPageState extends State<MainPage> {
     realStateCEP.dispose();
     realStateAddress.dispose();
     realStateNumber.dispose();
+
+    realStateFloors.dispose();
+    realStatePoolsQuantity.dispose();
+    realStateTennisCourtsQuantity.dispose();
+    realStateFootballCourtsQuantity.dispose();
+    realStateSaunasQuantity.dispose();
+    realStatePartyRoomsQuantity.dispose();
+    realStateOutdoorGrillsQuantity.dispose();
+    realStatePlaygroundsQuantity.dispose();
+    realStateUnitsCount.dispose();
+    realStateVisitorParkingSpotsQuantity.dispose();
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
-        title: const Text('Stepper'),
+        title: const Text('Cadastro de Real State'),
         centerTitle: true,
       ),
       body: Form(
@@ -83,7 +118,7 @@ class MainPageState extends State<MainPage> {
   List<Step> getSteps() => [
         Step(
           isActive: currentStep >= 0,
-          title: const Text('1'),
+          title: const Text('Informações básicas'),
           content: Column(
             children: <Widget>[
               if (isInvalidData)
@@ -154,7 +189,7 @@ class MainPageState extends State<MainPage> {
         ),
         Step(
           isActive: currentStep >= 1,
-          title: const Text('2'),
+          title: const Text('Endereço'),
           content: Column(
             children: <Widget>[
               TextFormField(
@@ -173,20 +208,49 @@ class MainPageState extends State<MainPage> {
         ),
         Step(
           isActive: currentStep >= 2,
-          title: const Text('3'),
+          title: const Text('Especificações'),
           content: Column(
             children: <Widget>[
               TextFormField(
-                  controller: realStateCEP,
-                  decoration: const InputDecoration(labelText: 'CEP')),
-              TextFormField(
-                controller: realStateAddress,
-                decoration: const InputDecoration(labelText: 'Endereço'),
-                readOnly: true,
+                controller: realStateFloors,
+                decoration: const InputDecoration(labelText: 'Andares'),
               ),
               TextFormField(
-                  controller: realStateNumber,
-                  decoration: const InputDecoration(labelText: 'Número')),
+                controller: realStatePoolsQuantity,
+                decoration: const InputDecoration(labelText: 'Quantidade de piscinas'),
+              ),
+              TextFormField(
+                controller: realStateTennisCourtsQuantity,
+                decoration: const InputDecoration(labelText: 'Quantidade de quadras de tênis'),
+              ),
+              TextFormField(
+                controller: realStateFootballCourtsQuantity,
+                decoration: const InputDecoration(labelText: 'Quantidade de quadras de futebol'),
+              ),
+              TextFormField(
+                controller: realStateSaunasQuantity,
+                decoration: const InputDecoration(labelText: 'Quantidade de saunas'),
+              ),
+              TextFormField(
+                controller: realStatePartyRoomsQuantity,
+                decoration: const InputDecoration(labelText: 'Quantidade de salões de festas'),
+              ),
+              TextFormField(
+                controller: realStateOutdoorGrillsQuantity,
+                decoration: const InputDecoration(labelText: 'Quantidade de churrasqueiras externas'),
+              ),
+              TextFormField(
+                controller: realStatePlaygroundsQuantity,
+                decoration: const InputDecoration(labelText: 'Quantidade de playgrounds'),
+              ),
+              TextFormField(
+                controller: realStateUnitsCount,
+                decoration: const InputDecoration(labelText: 'Contagem de unidades'),
+              ),
+              TextFormField(
+                controller: realStateVisitorParkingSpotsQuantity,
+                decoration: const InputDecoration(labelText: 'Quantidade de vagas de estacionamento para visitantes'),
+              ),
             ],
           ),
         ),
