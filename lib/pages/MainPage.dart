@@ -12,6 +12,8 @@ class MainPageState extends State<MainPage> {
   final formKey = GlobalKey<FormState>();
   int currentStep = 0;
   bool isInvalidData = false;
+  static const primaryColor = Color(0xff058B36);
+  static const errorColor = Color(0xff880808);
 
   late TextEditingController realStateStartDate;
   late TextEditingController realStateName;
@@ -31,7 +33,6 @@ class MainPageState extends State<MainPage> {
   late TextEditingController realStatePlaygroundsQuantity;
   late TextEditingController realStateUnitsCount;
   late TextEditingController realStateVisitorParkingSpotsQuantity;
-
 
   @override
   void initState() {
@@ -85,52 +86,68 @@ class MainPageState extends State<MainPage> {
       appBar: AppBar(
         title: const Text('Cadastro de Real State'),
         centerTitle: true,
+        backgroundColor: primaryColor,
       ),
-      body: Form(
-        key: formKey,
-        child: Stepper(
-          type: StepperType.horizontal,
-          steps: getSteps(),
-          currentStep: currentStep,
-          onStepContinue: () {
-            final isLastStep = currentStep == getSteps().length - 1;
-            if (isLastStep) {
-              final isValid = formKey.currentState?.validate();
-              if (isValid == false) {
-                setState(() => currentStep = 0);
-                setState(() => isInvalidData = true);
-              } else {
-                setState(() => isInvalidData = false);
-                // send data to server
-              }
-            } else {
-              setState(() => currentStep += 1);
-            }
-          },
-          onStepCancel: currentStep == 0
-              ? null
-              : () {
-                  setState(() => currentStep -= 1);
-                },
-        ),
-      ));
+      body: Theme(
+          data: Theme.of(context).copyWith(
+              colorScheme: const ColorScheme.light(
+                  primary: primaryColor,
+                  onPrimary: Colors.white,
+                  secondary: primaryColor,
+                  onSecondary: primaryColor,
+                  error: errorColor,
+                  onError: errorColor,
+                  background: primaryColor,
+                  onBackground: primaryColor,
+                  surface: primaryColor,
+                  onSurface: primaryColor)),
+          child: Form(
+            key: formKey,
+            child: Stepper(
+              type: StepperType.horizontal,
+              steps: getSteps(),
+              currentStep: currentStep,
+              onStepTapped: (step) => setState(() => currentStep = step),
+              onStepContinue: () {
+                final isLastStep = currentStep == getSteps().length - 1;
+                if (isLastStep) {
+                  final isValid = formKey.currentState?.validate();
+                  if (isValid == false) {
+                    setState(() => currentStep = 0);
+                    setState(() => isInvalidData = true);
+                  } else {
+                    setState(() => isInvalidData = false);
+                    // send data to server
+                  }
+                } else {
+                  setState(() => currentStep += 1);
+                }
+              },
+              onStepCancel: currentStep == 0
+                  ? null
+                  : () {
+                      setState(() => currentStep -= 1);
+                    },
+            ),
+          )));
 
   List<Step> getSteps() => [
         Step(
+          state: currentStep > 0 ? StepState.complete : StepState.indexed,
           isActive: currentStep >= 0,
-          title: const Text('Informações básicas'),
+          title: const Text('Geral'),
           content: Column(
             children: <Widget>[
               if (isInvalidData)
                 const Text(
                   'Notamos uma inconsistência nos dados, por favor, revise o formulário.',
                   style: TextStyle(
-                    color: Color(0xFFD32F2F),
+                    color: errorColor
                   ),
                 ),
               TextFormField(
                 controller: realStateName,
-                decoration: const InputDecoration(labelText: 'Nome'),
+                decoration: const InputDecoration(labelText: 'Nome *'),
                 validator: (value) {
                   if (value!.length < 4) {
                     return 'Digite pelo menos 4 caracteres';
@@ -141,11 +158,11 @@ class MainPageState extends State<MainPage> {
               ),
               TextFormField(
                   controller: realStateDescription,
-                  decoration: const InputDecoration(labelText: 'Descrição')),
+                  decoration: const InputDecoration(labelText: 'Descrição *')),
               TextFormField(
                 controller: realStateStartDate,
                 decoration: const InputDecoration(
-                    labelText: 'Data de início',
+                    labelText: 'Data de início *',
                     suffixIcon: Icon(Icons.calendar_today)),
                 readOnly: true,
                 onTap: () async {
@@ -166,7 +183,7 @@ class MainPageState extends State<MainPage> {
               TextFormField(
                 controller: realStateDueDate,
                 decoration: const InputDecoration(
-                    labelText: 'Estimativa de entrega',
+                    labelText: 'Estimativa de entrega *',
                     suffixIcon: Icon(Icons.calendar_today)),
                 readOnly: true,
                 onTap: () async {
@@ -188,21 +205,22 @@ class MainPageState extends State<MainPage> {
           ),
         ),
         Step(
+          state: currentStep > 1 ? StepState.complete : StepState.indexed,
           isActive: currentStep >= 1,
           title: const Text('Endereço'),
           content: Column(
             children: <Widget>[
               TextFormField(
                   controller: realStateCEP,
-                  decoration: const InputDecoration(labelText: 'CEP')),
+                  decoration: const InputDecoration(labelText: 'CEP *')),
               TextFormField(
                 controller: realStateAddress,
-                decoration: const InputDecoration(labelText: 'Endereço'),
+                decoration: const InputDecoration(labelText: 'Endereço *'),
                 readOnly: true,
               ),
               TextFormField(
                   controller: realStateNumber,
-                  decoration: const InputDecoration(labelText: 'Número')),
+                  decoration: const InputDecoration(labelText: 'Número *')),
             ],
           ),
         ),
@@ -217,39 +235,49 @@ class MainPageState extends State<MainPage> {
               ),
               TextFormField(
                 controller: realStatePoolsQuantity,
-                decoration: const InputDecoration(labelText: 'Quantidade de piscinas'),
+                decoration:
+                    const InputDecoration(labelText: 'Quantidade de piscinas'),
               ),
               TextFormField(
                 controller: realStateTennisCourtsQuantity,
-                decoration: const InputDecoration(labelText: 'Quantidade de quadras de tênis'),
+                decoration: const InputDecoration(
+                    labelText: 'Quantidade de quadras de tênis'),
               ),
               TextFormField(
                 controller: realStateFootballCourtsQuantity,
-                decoration: const InputDecoration(labelText: 'Quantidade de quadras de futebol'),
+                decoration: const InputDecoration(
+                    labelText: 'Quantidade de quadras de futebol'),
               ),
               TextFormField(
                 controller: realStateSaunasQuantity,
-                decoration: const InputDecoration(labelText: 'Quantidade de saunas'),
+                decoration:
+                    const InputDecoration(labelText: 'Quantidade de saunas'),
               ),
               TextFormField(
                 controller: realStatePartyRoomsQuantity,
-                decoration: const InputDecoration(labelText: 'Quantidade de salões de festas'),
+                decoration: const InputDecoration(
+                    labelText: 'Quantidade de salões de festas'),
               ),
               TextFormField(
                 controller: realStateOutdoorGrillsQuantity,
-                decoration: const InputDecoration(labelText: 'Quantidade de churrasqueiras externas'),
+                decoration: const InputDecoration(
+                    labelText: 'Quantidade de churrasqueiras externas'),
               ),
               TextFormField(
                 controller: realStatePlaygroundsQuantity,
-                decoration: const InputDecoration(labelText: 'Quantidade de playgrounds'),
+                decoration: const InputDecoration(
+                    labelText: 'Quantidade de playgrounds'),
               ),
               TextFormField(
                 controller: realStateUnitsCount,
-                decoration: const InputDecoration(labelText: 'Contagem de unidades'),
+                decoration:
+                    const InputDecoration(labelText: 'Contagem de unidades'),
               ),
               TextFormField(
                 controller: realStateVisitorParkingSpotsQuantity,
-                decoration: const InputDecoration(labelText: 'Quantidade de vagas de estacionamento para visitantes'),
+                decoration: const InputDecoration(
+                    labelText:
+                        'Quantidade de vagas de estacionamento para visitantes'),
               ),
             ],
           ),
