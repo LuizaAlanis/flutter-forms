@@ -38,9 +38,6 @@ class MainPageState extends State<MainPage> {
   late TextEditingController realStateUnitsCount;
   late TextEditingController realStateVisitorParkingSpotsQuantity;
 
-  get imageProvider => const NetworkImage(
-      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1475&q=80');
-
   @override
   void initState() {
     super.initState();
@@ -464,57 +461,3 @@ class MainPageState extends State<MainPage> {
       ];
 }
 
-class DottedSquarePainter extends CustomPainter {
-  final Color color;
-  final double strokeWidth;
-  final double gapSize;
-
-  DottedSquarePainter({
-    this.color = Colors.black,
-    this.strokeWidth = 2.0,
-    this.gapSize = 5.0,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final rect = Offset.zero & size;
-    final paint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth;
-
-    final path = Path()
-      ..moveTo(rect.left, rect.top)
-      ..lineTo(rect.right, rect.top)
-      ..lineTo(rect.right, rect.bottom)
-      ..lineTo(rect.left, rect.bottom)
-      ..lineTo(rect.left, rect.top);
-
-    final dashPath = _dashPath(path, gapSize);
-    canvas.drawPath(dashPath, paint);
-  }
-
-  Path _dashPath(Path path, double gapSize) {
-    final metrics = path.computeMetrics().toList();
-    final dashPath = Path();
-    for (final metric in metrics) {
-      double distance = 0.0;
-      while (distance < metric.length) {
-        final move = metric.getTangentForOffset(distance)?.position;
-        final line = metric.getTangentForOffset(distance + gapSize)?.position;
-        if (move != null && line != null) {
-          dashPath.moveTo(move.dx, move.dy);
-          dashPath.lineTo(line.dx, line.dy);
-        }
-        distance += gapSize * 2;
-      }
-    }
-    return dashPath;
-  }
-
-  @override
-  bool shouldRepaint(DottedSquarePainter oldDelegate) => false;
-
-  @override
-  bool shouldRebuildSemantics(DottedSquarePainter oldDelegate) => false;
-}
