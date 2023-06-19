@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
 
@@ -13,6 +14,9 @@ class MainPageState extends State<MainPage> {
   int currentStep = 0;
   bool isInvalidData = false;
   static const primaryColor = Color(0xff058B36);
+  static const secondaryColor = Color(0xff2670B9);
+  static const tertiaryColor = Color(0xff2670B9);
+  static const grey = Color(0xffC2C2C2);
   static const errorColor = Color(0xff880808);
 
   late TextEditingController realStateStartDate;
@@ -33,6 +37,8 @@ class MainPageState extends State<MainPage> {
   late TextEditingController realStatePlaygroundsQuantity;
   late TextEditingController realStateUnitsCount;
   late TextEditingController realStateVisitorParkingSpotsQuantity;
+
+  get imageProvider => const NetworkImage('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1475&q=80');
 
   @override
   void initState() {
@@ -84,7 +90,7 @@ class MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
-        title: const Text('Cadastro de Real State'),
+        title: const Text('Cadastrar Empreendimento'),
         centerTitle: true,
         backgroundColor: primaryColor,
       ),
@@ -118,17 +124,43 @@ class MainPageState extends State<MainPage> {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: controls.onStepContinue,
-                          child: Text(isLastStep ? 'Cadastrar' : 'Próximo'),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 15, horizontal: 24),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                          ),
+                          child: Text(
+                            isLastStep ? 'Cadastrar' : 'Próximo',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 12),
-                      if (currentStep != 0)
+                      if (currentStep != 0) ...[
+                        const SizedBox(width: 12),
                         Expanded(
                           child: ElevatedButton(
                             onPressed: controls.onStepCancel,
-                            child: const Text('Voltar'),
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 15, horizontal: 24),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                            ),
+                            child: const Text('Voltar',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
+                      ],
                     ],
                   ),
                 );
@@ -246,6 +278,13 @@ class MainPageState extends State<MainPage> {
                   }
                 },
               ),
+              CustomPaint(
+                painter: DottedSquarePainter(),
+                child: Image(
+                  image: imageProvider,
+                  fit: BoxFit.cover,
+                ),
+              ),
             ],
           ),
         ),
@@ -344,4 +383,61 @@ class MainPageState extends State<MainPage> {
           ),
         ),
       ];
+}
+
+
+class DottedSquarePainter extends CustomPainter {
+  final Color color;
+  final double strokeWidth;
+  final double gapSize;
+
+  DottedSquarePainter({
+    this.color = Colors.black,
+    this.strokeWidth = 2.0,
+    this.gapSize = 5.0,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rect = Offset.zero & size;
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth;
+
+    final path = Path()
+      ..moveTo(rect.left, rect.top)
+      ..lineTo(rect.right, rect.top)
+      ..lineTo(rect.right, rect.bottom)
+      ..lineTo(rect.left, rect.bottom)
+      ..lineTo(rect.left, rect.top);
+
+    final dashPath = _dashPath(path, gapSize);
+    canvas.drawPath(dashPath, paint);
+  }
+
+  Path _dashPath(Path path, double gapSize) {
+    final metrics = path.computeMetrics().toList();
+    final dashPath = Path();
+    for (final metric in metrics) {
+      double distance = 0.0;
+      while (distance < metric.length) {
+        final move = metric.getTangentForOffset(distance)?.position;
+        final line = metric.getTangentForOffset(distance + gapSize)?.position;
+        if (move != null && line != null) {
+          dashPath.moveTo(move.dx, move.dy);
+          dashPath.lineTo(line.dx, line.dy);
+        }
+        distance += gapSize * 2;
+      }
+    }
+    return dashPath;
+  }
+
+
+  @override
+  bool shouldRepaint(DottedSquarePainter oldDelegate) => false;
+
+  @override
+  bool shouldRebuildSemantics(DottedSquarePainter oldDelegate) => false;
 }
