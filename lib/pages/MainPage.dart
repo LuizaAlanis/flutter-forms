@@ -1,6 +1,6 @@
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -38,7 +38,8 @@ class MainPageState extends State<MainPage> {
   late TextEditingController realStateUnitsCount;
   late TextEditingController realStateVisitorParkingSpotsQuantity;
 
-  get imageProvider => const NetworkImage('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1475&q=80');
+  get imageProvider => const NetworkImage(
+      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1475&q=80');
 
   @override
   void initState() {
@@ -152,7 +153,8 @@ class MainPageState extends State<MainPage> {
                                 borderRadius: BorderRadius.circular(100),
                               ),
                             ),
-                            child: const Text('Voltar',
+                            child: const Text(
+                              'Voltar',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -278,13 +280,90 @@ class MainPageState extends State<MainPage> {
                   }
                 },
               ),
-              CustomPaint(
-                painter: DottedSquarePainter(),
-                child: Image(
-                  image: imageProvider,
-                  fit: BoxFit.cover,
+              const SizedBox(
+                height: 60,
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(left: 0),
+                      child: Text(
+                        'Foto da capa*',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
+              GestureDetector(
+                onTap: () {
+                  print('Dotted square tapped!');
+                },
+                child: Align(
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 200,
+                    child: DottedBorder(
+                      color: Colors.grey,
+                      strokeWidth: 1.5,
+                      dashPattern: const [10, 4],
+                      child: const Align(
+                        alignment: Alignment.center,
+                        child: Icon(
+                          Icons.image,
+                          size: 50,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 60,
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(left: 0),
+                      child: Text(
+                        'Planta baixa',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  print('Dotted square tapped!');
+                },
+                child: Align(
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 200,
+                    child: DottedBorder(
+                      color: Colors.grey,
+                      strokeWidth: 1.5,
+                      dashPattern: const [10, 4],
+                      child: const Align(
+                        alignment: Alignment.center,
+                        child: Icon(
+                          Icons.image,
+                          size: 50,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              )
             ],
           ),
         ),
@@ -385,7 +464,6 @@ class MainPageState extends State<MainPage> {
       ];
 }
 
-
 class DottedSquarePainter extends CustomPainter {
   final Color color;
   final double strokeWidth;
@@ -433,7 +511,6 @@ class DottedSquarePainter extends CustomPainter {
     }
     return dashPath;
   }
-
 
   @override
   bool shouldRepaint(DottedSquarePainter oldDelegate) => false;
