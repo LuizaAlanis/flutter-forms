@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -10,6 +15,24 @@ class MainPage extends StatefulWidget {
 }
 
 class MainPageState extends State<MainPage> {
+  File? image;
+
+  Future pickImage() async {
+    try{
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (image == null) return;
+
+      final imageTemporary = File(image.path);
+      setState(() {
+        this.image = imageTemporary;
+      });
+    } on PlatformException catch(e){
+      if (kDebugMode) {
+        print('Failed to pick image: $e');
+      }
+    }
+  }
+
   final formKey = GlobalKey<FormState>();
   int currentStep = 0;
   bool isInvalidData = false;
@@ -295,15 +318,13 @@ class MainPageState extends State<MainPage> {
                 ),
               ),
               GestureDetector(
-                onTap: () {
-                  print('Dotted square tapped!');
-                },
+                onTap: () => pickImage(),
                 child: Align(
                   alignment: Alignment.center,
                   child: SizedBox(
                     width: double.infinity,
                     height: 200,
-                    child: DottedBorder(
+                    child: image != null? Image.file(image!, fit: BoxFit.cover): DottedBorder(
                       color: Colors.grey,
                       strokeWidth: 1.5,
                       dashPattern: const [10, 4],
@@ -460,4 +481,3 @@ class MainPageState extends State<MainPage> {
         ),
       ];
 }
-
