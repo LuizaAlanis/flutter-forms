@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
@@ -5,8 +6,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:forms/utils/enum/Images.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+
+import '../utils/helpers/mask-helper.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -16,6 +20,43 @@ class MainPage extends StatefulWidget {
 }
 
 class MainPageState extends State<MainPage> {
+  void findCep() async {
+    try {
+      String cep = realStateCEP.text;
+      var url = Uri.parse('https://viacep.com.br/ws/$cep/json');
+
+      http.Response response;
+      response = await http.get(url);
+
+      /* If it was a successful request */
+      if (response.statusCode == 200) {
+        Map<String, dynamic> data = json.decode(response.body);
+
+        String logradouro = data["logradouro"];
+        String bairro = data["bairro"];
+        String localidade = data["localidade"];
+        String uf = data["uf"];
+
+        String completeAddress = "$logradouro, $bairro - $localidade - $uf";
+
+        /* Fill the address field */
+        setState(() {
+          realStateAddress.text = completeAddress;
+        });
+      } else {
+        // Handle other status codes if needed
+        if (kDebugMode) {
+          print('Failed to find address with status: ${response.statusCode}');
+        }
+      }
+    } catch (e) {
+      // Handle any exceptions or errors
+      if (kDebugMode) {
+        print('Error occurred: $e');
+      }
+    }
+  }
+
   File? coverImage;
   File? bluePrintImage;
 
@@ -403,21 +444,25 @@ class MainPageState extends State<MainPage> {
           content: Column(
             children: <Widget>[
               TextFormField(
-                controller: realStateCEP,
-                decoration: const InputDecoration(labelText: 'CEP *'),
-                validator: (value) {
-                  if (value!.length < 5) {
-                    return 'Por favor, informe o CEP';
-                  } else {
-                    return null;
-                  }
-                },
-              ),
+                  controller: realStateCEP,
+                  decoration: const InputDecoration(labelText: 'CEP *'),
+                  inputFormatters: [cepFormatter],
+                  validator: (value) {
+                    if (value!.length < 5) {
+                      return 'Por favor, informe o CEP';
+                    } else {
+                      return null;
+                    }
+                  },
+                  onChanged: (text) {
+                    if (text.length >= 8) {
+                      findCep();
+                    }
+                  }),
               TextFormField(
-                controller: realStateAddress,
-                decoration: const InputDecoration(labelText: 'Endereço *'),
-                readOnly: true,
-              ),
+                  controller: realStateAddress,
+                  decoration: const InputDecoration(labelText: 'Endereço *'),
+                  readOnly: true),
               TextFormField(
                 controller: realStateNumber,
                 decoration: const InputDecoration(labelText: 'Número *'),
