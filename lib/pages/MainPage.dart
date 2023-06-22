@@ -4,8 +4,9 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
+import 'package:forms/utils/enum/Images.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -15,18 +16,26 @@ class MainPage extends StatefulWidget {
 }
 
 class MainPageState extends State<MainPage> {
-  File? image;
+  File? coverImage;
+  File? bluePrintImage;
 
-  Future pickImage() async {
-    try{
+  Future pickImage(ImageKind imageKind) async {
+    try {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (image == null) return;
 
       final imageTemporary = File(image.path);
       setState(() {
-        this.image = imageTemporary;
+        switch (imageKind) {
+          case ImageKind.cover:
+            coverImage = imageTemporary;
+            break;
+          case ImageKind.bluePrint:
+            bluePrintImage = imageTemporary;
+            break;
+        }
       });
-    } on PlatformException catch(e){
+    } on PlatformException catch (e) {
       if (kDebugMode) {
         print('Failed to pick image: $e');
       }
@@ -318,25 +327,27 @@ class MainPageState extends State<MainPage> {
                 ),
               ),
               GestureDetector(
-                onTap: () => pickImage(),
+                onTap: () => pickImage(ImageKind.cover),
                 child: Align(
                   alignment: Alignment.center,
                   child: SizedBox(
                     width: double.infinity,
                     height: 200,
-                    child: image != null? Image.file(image!, fit: BoxFit.cover): DottedBorder(
-                      color: Colors.grey,
-                      strokeWidth: 1.5,
-                      dashPattern: const [10, 4],
-                      child: const Align(
-                        alignment: Alignment.center,
-                        child: Icon(
-                          Icons.image,
-                          size: 50,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
+                    child: coverImage != null
+                        ? Image.file(coverImage!, fit: BoxFit.cover)
+                        : DottedBorder(
+                            color: Colors.grey,
+                            strokeWidth: 1.5,
+                            dashPattern: const [10, 4],
+                            child: const Align(
+                              alignment: Alignment.center,
+                              child: Icon(
+                                Icons.image,
+                                size: 50,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
                   ),
                 ),
               ),
@@ -358,30 +369,30 @@ class MainPageState extends State<MainPage> {
                 ),
               ),
               GestureDetector(
-                onTap: () {
-                  print('Dotted square tapped!');
-                },
+                onTap: () => pickImage(ImageKind.bluePrint),
                 child: Align(
                   alignment: Alignment.center,
                   child: SizedBox(
                     width: double.infinity,
                     height: 200,
-                    child: DottedBorder(
-                      color: Colors.grey,
-                      strokeWidth: 1.5,
-                      dashPattern: const [10, 4],
-                      child: const Align(
-                        alignment: Alignment.center,
-                        child: Icon(
-                          Icons.image,
-                          size: 50,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
+                    child: bluePrintImage != null
+                        ? Image.file(bluePrintImage!, fit: BoxFit.cover)
+                        : DottedBorder(
+                            color: Colors.grey,
+                            strokeWidth: 1.5,
+                            dashPattern: const [10, 4],
+                            child: const Align(
+                              alignment: Alignment.center,
+                              child: Icon(
+                                Icons.image,
+                                size: 50,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),

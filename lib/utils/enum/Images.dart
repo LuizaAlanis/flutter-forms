@@ -1,0 +1,4 @@
+enum ImageKind {
+  cover,
+  bluePrint
+}
